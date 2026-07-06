@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.4.0] - 2026-07-06
+
+### Added
+
+- **`PLANNING_DISABLED=1` per-invocation opt-out** (closes #195, reported by @marcmuon). One-shot sessions that share a working directory with an active plan (a CI review bot run via `codex exec`, a read-only research agent, a nested orchestrator) were hijacked by the hooks: plan context injected, the actual output redirected into `progress.md`, and a fabricated completed phase appended to `task_plan.md`. All Codex hook entry points (`session-start.sh`, `user-prompt-submit.sh`, `pre-tool-use.sh`, `post-tool-use.sh`, `stop.sh`, `pre-compact.sh`, plus the Python adapter route via `codex_hook_adapter.is_session_attached`) and the canonical dispatchers (`inject-plan.sh`, `gate-stop.sh`, `check-complete.sh`/`.ps1`) now exit before reading the plan when `PLANNING_DISABLED=1` is set in the environment. PreToolUse still emits its allow decision so tool calls proceed normally. The guard ships in every distributed copy: canonical scripts, the skill package, all sync-managed IDE mirrors, the five language variants, the standalone `.kiro` copy, and the `clawhub-upload` bundle. Usage documented in `docs/codex.md`. New `tests/test_planning_disabled_optout.py` (12 tests) covers baseline behavior, disabled behavior, the #195 acceptance criterion (plan files byte-for-byte unchanged after a full disabled hook pass), and a guard-presence sweep across every copy.
+
+### Fixed
+
+- **`docs/codex.md` still described the pre-v3.1.0 blocking Stop hook.** The hook table said Stop "blocks once when phases are incomplete"; that block path was removed in v3.1.0 (PR #180) and the installed hook has emitted an advisory reminder since. The row now matches the shipped behavior. The `decision: block` half of #195 was reported against a v2.41.0 bundle shipped by oh-my-codex; current releases do not block.
+
+### Verification
+
+- Python suite: 200 passed, 5 skipped, 0 failed (12 new opt-out tests).
+- Functional smoke test on a live temp plan: baseline injection unchanged without the variable; with it set, no hook output, tool calls still allowed, plan files byte-identical afterwards.
+- `scripts/sync-ide-folders.py --verify`: all IDE folders in sync. All modified `.sh` files pass `sh -n`; all modified `.ps1` files parse clean.
+
+### Thanks
+
+- @marcmuon (Marc Kelechava) for the precise report separating this failure from #178 and #146, with reproductions for both symptoms, the root-cause file list, and acceptance criteria this release implements directly (#195).
+
 ## [3.3.0] - 2026-07-06
 
 ### Added

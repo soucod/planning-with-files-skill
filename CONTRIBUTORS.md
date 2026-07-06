@@ -318,6 +318,7 @@ Thank you to everyone who reported issues, provided feedback, and helped test fi
 - [@mixian939](https://github.com/mixian939) - Issue #191 (Codex hooks reporting a false "0/0 phases complete" status for an unstructured task_plan.md, with a full root-cause diagnosis and suggested fix; the audit this triggered found and fixed the same defect in the canonical scripts and two other IDE adapters, fixed in v3.2.0)
 - [@AvitalAviv](https://github.com/AvitalAviv) - Issue #188 (flagged that the repo had no private vulnerability disclosure channel; private vulnerability reporting is now enabled and documented in SECURITY.md)
 - [@lazyst](https://github.com/lazyst) - Issue #190 (feature request describing the Pi extension activating hooks on a draft plan before user confirmation, with the exact passive-until-confirmed behavior that shipped as `/plan-execute` in v3.3.0)
+- [@marcmuon](https://github.com/marcmuon) (Marc Kelechava) - Issue #195 (one-shot `codex exec` sessions sharing a cwd with an incomplete plan got hijacked and mutated orchestrator-owned plan files; the report's reproductions, root-cause file list, and acceptance criteria shipped directly as the `PLANNING_DISABLED=1` opt-out in v3.4.0)
 
 And many others who have starred, forked, and shared this project!
 
